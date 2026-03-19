@@ -135,6 +135,27 @@ body {
   color: var(--gray-800);
 }
 
+.btn-csv {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--white);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.btn-csv:hover {
+  background: #15803d;
+  border-color: #15803d;
+}
+
 /* ── Filter Bar ───────────────────────────── */
 .filter-bar {
   background: var(--white);

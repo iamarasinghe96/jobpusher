@@ -133,6 +133,9 @@ function setupEventListeners() {
     applyFilters();
   });
 
+  // Download CSV button
+  document.getElementById("btnDownloadCSV").addEventListener("click", downloadCSV);
+
   // Refresh button
   document.getElementById("btnRefresh").addEventListener("click", () => {
     state.jobs = [];
@@ -537,6 +540,53 @@ function showPanel(panel) {
 function hideAllPanels() {
   [$loading, $empty, $error, $noResults].forEach(p => p.classList.add("hidden"));
   $grid.style.display = "";
+}
+
+function downloadCSV() {
+  const jobs = state.filtered;
+  if (!jobs.length) {
+    showToast("No jobs to export.");
+    return;
+  }
+
+  const columns = [
+    ["Title",           j => j.title],
+    ["Company",         j => j.company],
+    ["Location",        j => j.location],
+    ["Match Score",     j => j.match_score],
+    ["Recommendation",  j => j.recommendation],
+    ["Matched Skills",  j => parseList(j.matched_skills).join("; ")],
+    ["Missing Skills",  j => parseList(j.missing_skills).join("; ")],
+    ["Summary",         j => j.match_summary],
+    ["Source",          j => j.source],
+    ["Date Posted",     j => j.date_posted],
+    ["Job Type",        j => j.job_type],
+    ["Salary",          j => j.salary],
+    ["URL",             j => j.url],
+  ];
+
+  const escape = v => {
+    const s = v == null ? "" : String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+      ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  const header = columns.map(([label]) => label).join(",");
+  const rows   = jobs.map(j => columns.map(([, fn]) => escape(fn(j))).join(","));
+  const csv    = [header, ...rows].join("\n");
+
+  const date     = new Date().toISOString().slice(0, 10);
+  const filename = `jobpusher_${date}.csv`;
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  showToast(`Downloaded ${jobs.length} jobs as ${filename}`);
 }
 
 function showToast(message) {
