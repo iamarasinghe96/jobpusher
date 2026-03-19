@@ -1,0 +1,96 @@
+# ============================================================
+# Job Pusher - Configuration
+# Edit this file to match your profile and preferences
+# ============================================================
+
+search:
+  # --- Your target job titles / search queries ---
+  # Add multiple to cast a wider net
+  job_titles:
+    - "Project Manager"
+    - "Business Analyst"
+    - "Program Manager"
+    - "IT Manager"
+    # Add more titles here...
+
+  # --- Key skills from your CV (used for keyword pre-filtering) ---
+  # These reduce Gemini API calls by filtering obviously irrelevant jobs
+  keywords:
+    - "Agile"
+    - "Scrum"
+    - "Stakeholder Management"
+    - "Risk Management"
+    - "Project Delivery"
+    # Add your key skills here...
+
+  # --- Job sources to scrape ---
+  # Options: linkedin, indeed, seek
+  sites:
+    - linkedin
+    - indeed
+    - seek
+
+  # --- How many results to fetch per site per search query ---
+  results_per_site: 30
+
+  # --- Only include jobs posted in the last N hours ---
+  hours_old: 48
+
+  # --- Remote jobs ---
+  include_remote: true
+
+matching:
+  # --- Minimum AI match score to include a job (0-100) ---
+  # Can be overridden in the web UI
+  default_min_score: 65
+
+  # --- Keyword pre-filter: min keyword matches before AI scoring ---
+  # Jobs with fewer than this many matching keywords are skipped
+  # Set to 0 to disable pre-filtering (uses more Gemini quota)
+  keyword_filter_min: 2
+
+  # --- Gemini model to use ---
+  gemini_model: "gemini-1.5-flash"
+
+locations:
+  # --- Albury/Wodonga region (76km radius) ---
+  albury_region:
+    - "Albury NSW"
+    - "Wodonga VIC"
+    - "Wangaratta VIC"
+    - "Benalla VIC"
+    - "Corowa NSW"
+    - "Yarrawonga VIC"
+    - "Beechworth VIC"
+    - "Myrtleford VIC"
+    - "Chiltern VIC"
+    - "Rutherglen VIC"
+
+  # --- Vline corridor (train line between Albury and Melbourne) ---
+  vline_corridor:
+    - "Seymour VIC"
+    - "Benalla VIC"
+    - "Wangaratta VIC"
+    - "Wodonga VIC"
+
+  # --- Melbourne ---
+  melbourne:
+    - "Melbourne VIC"
+    - "CBD Melbourne VIC"
+
+  # --- Seek-specific region slugs (for Seek scraper) ---
+  seek_regions:
+    - "albury-wodonga"
+    - "wangaratta"
+    - "bendigo-goldfields"
+    - "melbourne"
+    - "central-vic"
+
+sheets:
+  # --- Your Google Sheets spreadsheet ID (from the URL) ---
+  # https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit
+  spreadsheet_id: ""
+  raw_jobs_tab: "Raw Jobs"
+  matched_jobs_tab: "Matched Jobs"
+  # Path to your Google service account credentials JSON
+  credentials_file: "credentials.json"

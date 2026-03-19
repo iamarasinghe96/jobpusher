@@ -1,0 +1,88 @@
+name: Daily Job Scraper
+
+on:
+  # Run every day at 7:00 AM AEDT (UTC+11) = 8:00 PM UTC previous day
+  schedule:
+    - cron: "0 20 * * *"
+
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      skip_ai:
+        description: "Skip Gemini AI scoring (faster, keyword match only)"
+        required: false
+        default: "false"
+        type: boolean
+      min_score:
+        description: "Minimum match score (0-100)"
+        required: false
+        default: "65"
+
+jobs:
+  scrape-and-match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Run pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+          GOOGLE_SHEETS_CREDENTIALS_FILE: credentials.json
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.skip_ai }}" = "true" ]; then
+            ARGS="$ARGS --no-ai"
+          fi
+          if [ -n "${{ github.event.inputs.min_score }}" ]; then
+            ARGS="$ARGS --min-score ${{ github.event.inputs.min_score }}"
+          fi
+          python run_pipeline.py --no-sheets $ARGS
+
+      - name: Upload jobs.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobs-${{ github.run_id }}
+          path: output/jobs.json
+          retention-days: 7
+
+      - name: Upload raw CSV as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-jobs-${{ github.run_id }}
+          path: output/raw_jobs_*.csv
+          retention-days: 7
+
+      - name: Commit updated jobs.json
+        run: |
+          git config user.name "Job Pusher Bot"
+          git config user.email "jobpusher@noreply"
+          git add output/jobs.json || true
+          git diff --staged --quiet || git commit -m "chore: daily job update $(date +'%Y-%m-%d')"
+          git push || true
+
+# ─────────────────────────────────────────────
+# REQUIRED GITHUB SECRETS (set in repo settings):
+#
+#   GEMINI_API_KEY       → Your Google Gemini API key
+#   GOOGLE_SHEETS_ID     → (optional) Your Google Sheets spreadsheet ID
+#
+# To set secrets:
+#   1. Go to your repo → Settings → Secrets and variables → Actions
+#   2. Click "New repository secret"
+# ─────────────────────────────────────────────

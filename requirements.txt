@@ -1,0 +1,21 @@
+# Core scraping
+python-jobspy>=1.1.80
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Data handling
+pandas>=2.0.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# AI matching
+google-generativeai>=0.7.0
+
+# Google Sheets integration
+gspread>=6.0.0
+google-auth>=2.0.0
+google-auth-oauthlib>=1.0.0
+
+# Scheduling (optional - for daily automation)
+schedule>=1.2.0
