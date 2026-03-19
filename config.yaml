@@ -142,7 +142,7 @@ matching:
   keyword_filter_min: 2
 
   # --- Gemini model ---
-  gemini_model: "gemini-1.5-flash"
+  gemini_model: "gemini-2.0-flash"
 
 locations:
   # --- Albury/Wodonga region (76km radius) ---
