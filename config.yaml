@@ -72,6 +72,58 @@ search:
     - "Healthcare Project Manager"
     - "Health Program Manager"
 
+    # --- Administration & Operations ---
+    - "Administration"
+    - "Administration Assistant"
+    - "Senior Administration Officer"
+    - "Administration Officer"
+    - "Admin Officer"
+    - "Administration Coordinator"
+    - "Administration & Operations Coordinator"
+    - "Operations Support Agent"
+    - "Administration Support"
+    - "Project Administrator"
+    - "Admin and Client Services"
+    - "Receptionist"
+    - "Office Manager"
+
+    # --- Coordination & Business Support ---
+    - "Business Support Officer"
+    - "Governance Support Officer"
+    - "Dispatch Service Coordinator"
+    - "Residence Life Coordinator"
+    - "Practice Coordinator"
+    - "Service Coordinator"
+    - "Local Delivery Lead"
+    - "P&I Business Support Officer"
+
+    # --- Customer Service & Banking ---
+    - "Customer Advisor"
+    - "Customer Banking Specialist"
+    - "Personal Banking Advisor"
+    - "Home Lending Specialist"
+    - "Core Banking Specialist"
+    - "Client Services Coordinator"
+
+    # --- Marketing, Communications & Sales ---
+    - "Marketing Coordinator"
+    - "Communications Coordinator"
+    - "Membership Marketing and Communications Coordinator"
+    - "Social Media Officer"
+    - "Sales Consultant"
+    - "Digital Marketing Coordinator"
+    - "Sales Travel Consultant"
+
+    # --- HR & Staffing ---
+    - "Resourcing Officer"
+    - "Staffing Coordinator"
+
+    # --- Climate & Energy (expanded) ---
+    - "Climate Change Manager"
+    - "Energy Management Officer"
+    - "Climate Adaptation Officer"
+    - "Project Officer Energy Management"
+
   # --- Key skills for keyword pre-filtering ---
   # Jobs must match at least 2 of these to be sent to Gemini
   keywords:
@@ -117,6 +169,32 @@ search:
     - "artificial intelligence"
     - "digital transformation"
     - "automation"
+    # Administration & Operations
+    - "administration"
+    - "administrative"
+    - "coordinator"
+    - "coordination"
+    - "reception"
+    - "office support"
+    - "scheduling"
+    - "records management"
+    # Customer Service & Banking
+    - "customer service"
+    - "customer advisor"
+    - "banking"
+    - "lending"
+    - "financial services"
+    - "client services"
+    # Marketing & Communications
+    - "marketing"
+    - "communications"
+    - "social media"
+    - "content"
+    - "membership"
+    # HR & Staffing
+    - "resourcing"
+    - "recruitment"
+    - "staffing"
 
   # --- Job sources ---
   sites:
