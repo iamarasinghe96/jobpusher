@@ -5,24 +5,72 @@
 search:
   # --- Target job titles to search for ---
   job_titles:
+    # --- Core Project & Delivery ---
     - "Project Manager"
     - "Senior Project Manager"
     - "Delivery Manager"
     - "Delivery Lead"
     - "Program Manager"
+    - "Programme Manager"
     - "Project Officer"
     - "Senior Project Officer"
+    - "Project Coordinator"
+    - "PMO Analyst"
+    - "PMO Lead"
+    - "Portfolio Manager"
+
+    # --- Business & Strategy ---
     - "Business Analyst"
     - "Senior Business Analyst"
-    - "Project Coordinator"
     - "Change Manager"
+    - "Change Management Consultant"
     - "Operations Manager"
+    - "Process Improvement Manager"
+    - "Management Consultant"
+    - "Strategy Manager"
+    - "Strategic Advisor"
+    - "Innovation Manager"
+
+    # --- ESG / Sustainability (transferable from Acuity role) ---
     - "ESG Analyst"
+    - "ESG Manager"
     - "Sustainability Analyst"
     - "Sustainability Consultant"
+    - "Sustainability Manager"
+    - "Sustainability Program Manager"
     - "Climate Risk Analyst"
+    - "Climate Change Analyst"
     - "Environmental Consultant"
+    - "Environmental Advisor"
+    - "ESG Reporting Analyst"
+    - "Corporate Responsibility Manager"
+
+    # --- Government / Public Sector (regional roles) ---
+    - "Project Manager Government"
+    - "Government Project Officer"
+    - "Policy Officer"
+    - "Grants Manager"
+    - "Grants Coordinator"
+    - "Community Development Manager"
+    - "Regional Project Manager"
+
+    # --- Technology & Digital (transferable from AI/automation work) ---
     - "AI Project Manager"
+    - "Digital Transformation Manager"
+    - "Technology Project Manager"
+    - "ICT Project Manager"
+    - "Product Owner"
+    - "Scrum Master"
+
+    # --- Stakeholder & Client Facing (from Huawei/Acuity) ---
+    - "Account Manager"
+    - "Client Relationship Manager"
+    - "Engagement Manager"
+    - "Service Delivery Manager"
+
+    # --- Healthcare / Community (from AWH / Kids Clinic projects) ---
+    - "Healthcare Project Manager"
+    - "Health Program Manager"
 
   # --- Key skills for keyword pre-filtering ---
   # Jobs must match at least 2 of these to be sent to Gemini
