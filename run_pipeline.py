@@ -43,6 +43,31 @@ BASE_DIR = Path(__file__).parent
 OUTPUT_DIR = BASE_DIR / "output"
 CV_FILE = BASE_DIR / "cv_bank" / "profile.md"
 CONFIG_FILE = BASE_DIR / "config.yaml"
+CACHE_FILE = OUTPUT_DIR / "score_cache.json"
+
+
+def _load_score_cache() -> dict:
+    """Load previously scored jobs from cache. Returns {job_id: score_fields}."""
+    if CACHE_FILE.exists():
+        try:
+            with open(CACHE_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def _save_score_cache(cache: dict, new_rows: pd.DataFrame):
+    """Append newly scored rows into the cache and persist to disk."""
+    score_fields = ["match_score", "match_summary", "matched_skills", "missing_skills", "recommendation"]
+    for _, row in new_rows.iterrows():
+        job_id = row.get("job_id")
+        if not job_id:
+            continue
+        cache[str(job_id)] = {f: row.get(f) for f in score_fields if f in row}
+    with open(CACHE_FILE, "w", encoding="utf-8") as f:
+        json.dump(cache, f, indent=2, default=str)
+    logger.info(f"[Cache] {len(cache)} total scored jobs saved to score_cache.json")
 
 
 def load_config() -> dict:
@@ -120,16 +145,41 @@ def run_pipeline(
         from matching.gemini_matcher import score_jobs_with_gemini
 
         min_score = min_score_override or config["matching"].get("default_min_score", 65)
-        gemini_model = config["matching"].get("gemini_model", "gemini-1.5-flash")
+        gemini_model = config["matching"].get("gemini_model", "gemini-2.0-flash")
 
-        matched_df = score_jobs_with_gemini(
-            jobs_df=passing_df,
-            cv_text=cv_text,
-            gemini_api_key=gemini_key,
-            model=gemini_model,
-            min_score=0,  # Include all scored; filter in UI
-            requests_per_minute=14,
-        )
+        # Split into cached (already scored) vs new (need Gemini)
+        score_cache = _load_score_cache()
+        score_fields = ["match_score", "match_summary", "matched_skills", "missing_skills", "recommendation"]
+
+        is_cached = matched_df["job_id"].astype(str).isin(score_cache)
+        cached_df = matched_df[is_cached].copy()
+        new_df = matched_df[~is_cached].copy()
+
+        logger.info(f"[Cache] {len(cached_df)} jobs reused from cache, {len(new_df)} new jobs to score")
+
+        # Restore cached scores
+        for field in score_fields:
+            cached_df[field] = cached_df["job_id"].astype(str).map(
+                lambda jid, f=field: score_cache.get(jid, {}).get(f)
+            )
+
+        # Score only new jobs
+        if not new_df.empty:
+            new_df = score_jobs_with_gemini(
+                jobs_df=new_df,
+                cv_text=cv_text,
+                gemini_api_key=gemini_key,
+                model=gemini_model,
+                min_score=0,
+                requests_per_minute=14,
+            )
+            _save_score_cache(score_cache, new_df)
+        else:
+            logger.info("[Cache] All jobs already scored — skipping Gemini entirely")
+
+        matched_df = pd.concat([cached_df, new_df], ignore_index=True)
+        matched_df = matched_df.sort_values("match_score", ascending=False).reset_index(drop=True)
+
     elif skip_ai:
         logger.info("[Pipeline] Skipping AI scoring (--no-ai flag)")
         matched_df["match_score"] = matched_df.get("keyword_score", 0)
