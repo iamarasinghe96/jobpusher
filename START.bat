@@ -22,48 +22,15 @@ if errorlevel 1 (
 )
 echo [OK] Python found.
 
-:: ─── Step 2: Check .env file ────────────────────────────────
+:: ─── Step 2: Create .env if missing (key is pre-configured) ─
 if not exist ".env" (
-    if exist ".env.example" (
-        copy ".env.example" ".env" >nul
-        color 0E
-        echo.
-        echo [SETUP] No .env file found — created one from .env.example
-        echo.
-        echo  *** ACTION REQUIRED ***
-        echo  Open ".env" in this folder and paste your Gemini API key.
-        echo  Get a free key at: https://aistudio.google.com/apikey
-        echo.
-        echo  Once done, save the file and run START.bat again.
-        echo.
-        start notepad ".env"
-        pause
-        exit /b 0
-    ) else (
-        color 0C
-        echo [ERROR] No .env file found. Please create one with your GEMINI_API_KEY.
-        echo.
-        pause
-        exit /b 1
-    )
+    echo GEMINI_API_KEY=AIzaSyDHX9v4fpfZw_l9EVdsigllCdX9RpGMx-Y> ".env"
+    echo GOOGLE_SHEETS_CREDENTIALS_FILE=credentials.json>> ".env"
+    echo GOOGLE_SHEETS_ID=>> ".env"
+    echo [OK] .env created with API key.
+) else (
+    echo [OK] .env file found.
 )
-
-:: Quick check that the API key has been filled in
-findstr /C:"your_gemini_api_key_here" ".env" >nul 2>&1
-if not errorlevel 1 (
-    color 0E
-    echo.
-    echo [SETUP] Your .env file still has the placeholder API key.
-    echo.
-    echo  *** ACTION REQUIRED ***
-    echo  Open ".env" and replace "your_gemini_api_key_here" with your real key.
-    echo  Get a free key at: https://aistudio.google.com/apikey
-    echo.
-    start notepad ".env"
-    pause
-    exit /b 0
-)
-echo [OK] .env file found.
 
 :: ─── Step 3: Set up virtual environment ─────────────────────
 if not exist ".venv\Scripts\activate.bat" (
