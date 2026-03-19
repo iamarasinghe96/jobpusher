@@ -8,7 +8,6 @@ This scraper is for personal/research use only.
 
 import logging
 import time
-import uuid
 from datetime import datetime
 from typing import Optional
 
@@ -18,8 +17,8 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 # Seek search API endpoint
-SEEK_API = "https://www.seek.com.au/api/chalice-search/v4/search"
-SEEK_JOB_API = "https://www.seek.com.au/api/chalice-search/v4/job/{job_id}"
+SEEK_API = "https://www.seek.com.au/api/jobsearch/v5/search"
+SEEK_JOB_API = "https://www.seek.com.au/api/jobsearch/v5/job/{job_id}"
 
 # Seek location IDs for target regions (suburb -> seek location ID)
 # These are Seek's internal IDs for location filtering
@@ -111,22 +110,15 @@ def _search_seek(
     page = 1
     pages_to_fetch = max(1, max_results // 20)
 
-    session_id = str(uuid.uuid4())
-
     while page <= pages_to_fetch:
         params = {
             "siteKey": "AU-Main",
             "sourcesystem": "houston",
-            "userqueryid": str(uuid.uuid4()),
-            "userid": str(uuid.uuid4()),
-            "usersessionid": session_id,
-            "eventCaptureSessionId": session_id,
             "page": page,
             "seekSelectAllPages": "true",
             "keywords": keywords,
             "where": where,
-            "hadPremiumListings": "true",
-            "include": "seodata,standout",
+            "include": "seodata",
             "locale": "en-AU",
             "pageSize": 20,
         }
