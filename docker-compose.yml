@@ -1,0 +1,9 @@
+services:
+  jobpusher:
+    build: .
+    env_file: .env
+    volumes:
+      - ./output:/app/output
+      - ./cv_bank:/app/cv_bank
+      - ./config.yaml:/app/config.yaml
+      - ./credentials.json:/app/credentials.json:ro
