@@ -385,6 +385,8 @@ def schedule_daily(config: dict, gemini_key: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Job Pusher Pipeline")
     parser.add_argument("--no-ai", action="store_true", help="Skip Gemini AI scoring")
+    parser.add_argument("--score-only", action="store_true", help="Score existing CSV without re-scraping (uses most recent raw_jobs_*.csv)")
+    parser.add_argument("--csv", type=str, help="Path to CSV to score (used with --score-only)")
     parser.add_argument("--min-score", type=int, help="Override minimum match score (0-100)")
     parser.add_argument("--schedule", action="store_true", help="Run daily at 7am")
     parser.add_argument("--no-sheets", action="store_true", help="Skip Google Sheets sync")
@@ -397,7 +399,16 @@ if __name__ == "__main__":
         logger.warning("GEMINI_API_KEY not set. Use --no-ai to run without AI scoring.")
         logger.warning("Or set GEMINI_API_KEY in your .env file.")
 
-    if args.schedule:
+    if args.score_only:
+        # Score existing CSV without re-scraping
+        import subprocess, sys as _sys
+        cmd = [_sys.executable, str(BASE_DIR / "score_existing.py")]
+        if args.csv:
+            cmd += ["--csv", args.csv]
+        if args.min_score:
+            cmd += ["--min-score", str(args.min_score)]
+        subprocess.run(cmd)
+    elif args.schedule:
         schedule_daily(config, gemini_key)
     else:
         run_pipeline(
